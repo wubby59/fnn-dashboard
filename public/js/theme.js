@@ -6,7 +6,11 @@ const Theme = (() => {
   const ICONS = { light: '\u2600\uFE0F', dark: '\uD83C\uDF19', auto: '\uD83D\uDCBB' };
 
   let currentMode = localStorage.getItem(STORAGE_KEY) || 'auto';
-  let animOn = localStorage.getItem(ANIM_KEY) !== 'off';
+  // Default: respect OS prefers-reduced-motion, but let user override via toggle
+  const storedAnim = localStorage.getItem(ANIM_KEY);
+  let animOn = storedAnim !== null
+    ? storedAnim !== 'off'
+    : !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function apply() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

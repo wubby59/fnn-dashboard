@@ -145,7 +145,7 @@ const Stats = (() => {
       return;
     }
 
-    // Full rebuild
+    // Full rebuild — also clears skeleton placeholders
     currentDeviceIds = sorted.map(d => d.device_id);
     grid.innerHTML = '';
     sorted.forEach(device => {

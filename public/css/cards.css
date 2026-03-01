@@ -13,6 +13,31 @@
   padding: var(--sp-sm) var(--sp-md);
   position: relative;
   overflow: hidden;
+  animation: cardEntrance 0.5s var(--ease-spring) both;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0ms; }
+.stat-card:nth-child(2) { animation-delay: 60ms; }
+.stat-card:nth-child(3) { animation-delay: 120ms; }
+.stat-card:nth-child(4) { animation-delay: 180ms; }
+.stat-card:nth-child(5) { animation-delay: 240ms; }
+.stat-card:nth-child(6) { animation-delay: 300ms; }
+.stat-card:nth-child(7) { animation-delay: 360ms; }
+.stat-card:nth-child(8) { animation-delay: 420ms; }
+.stat-card:nth-child(9) { animation-delay: 480ms; }
+.stat-card:nth-child(10) { animation-delay: 540ms; }
+.stat-card:nth-child(11) { animation-delay: 600ms; }
+.stat-card:nth-child(12) { animation-delay: 660ms; }
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .stat-card--pinned {
@@ -41,6 +66,7 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--base-text);
+  letter-spacing: -0.01em;
 }
 
 .stat-card__ip {
@@ -67,12 +93,13 @@
   color: var(--muted-text);
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s;
+  transition: transform 0.2s var(--ease-spring), background 0.2s ease, color 0.2s ease;
 }
 
 .stat-card__action:hover {
   background: var(--glass-bg-secondary);
   color: var(--primary);
+  transform: scale(1.1);
 }
 
 .stat-card__action--pinned {
@@ -162,10 +189,10 @@ html.dark .stat-bar__track {
   50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.35), inset 0 0 20px rgba(239, 68, 68, 0.15); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .stat-card--warn,
-  .stat-card--down { animation: none; }
-}
+/* Animation toggle disables entrance + pulse animations */
+html.no-anim .stat-card { animation: none; }
+html.no-anim .stat-card--warn,
+html.no-anim .stat-card--down { animation: none; }
 
 /* Stale indicator */
 .stat-card--stale {
