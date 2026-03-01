@@ -149,7 +149,6 @@ body {
 }
 
 .glass-card-secondary:hover {
-  transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(31, 38, 135, 0.2);
 }
 

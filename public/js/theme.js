@@ -37,7 +37,10 @@ const Theme = (() => {
       animOn ? BgLightning.start() : BgLightning.stop();
     }
     if (typeof Lightning !== 'undefined') {
-      animOn ? Lightning.start() : Lightning.stop();
+      // Only start Lightning from toggle clicks (orbs already in DOM).
+      // Initial start is handled by app.js after orbs render.
+      if (!animOn) Lightning.stop();
+      else if (document.querySelectorAll('.service-orb').length > 0) Lightning.start();
     }
   }
 

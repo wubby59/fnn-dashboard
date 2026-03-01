@@ -43,7 +43,7 @@
 }
 
 .archive-chart-single {
-  padding: var(--sp-sm) var(--sp-base);
+  padding: var(--sp-base) var(--sp-lg);
   width: 100%;
 }
 
@@ -75,5 +75,9 @@
 @media (max-width: 480px) {
   .chart-card {
     min-height: 160px;
+  }
+
+  .archive-chart-single__canvas {
+    height: 240px;
   }
 }

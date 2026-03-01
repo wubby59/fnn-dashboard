@@ -8,6 +8,7 @@ const MAX_PARTITIONS = 50;
 const MAX_FILES = 500;
 const MAX_CONNECTIONS = 200;
 const MAX_ID_LENGTH = 100;
+const MAX_STR_LENGTH = 255;
 
 // Periodic cleanup tracker (run once per hour, not every request)
 let lastCleanup = 0;
@@ -21,6 +22,56 @@ function runCleanupIfNeeded(db) {
   db.prepare(`DELETE FROM disk_partitions WHERE reported_at < datetime('now', '-24 hours')`).run();
   db.prepare(`DELETE FROM archive_files WHERE reported_at < datetime('now', '-30 days')`).run();
   db.prepare(`DELETE FROM vpn_connections WHERE reported_at < datetime('now', '-30 days')`).run();
+}
+
+function truncate(str, max) {
+  if (str == null) return null;
+  return String(str).slice(0, max);
+}
+
+// Lazy-init prepared statements (created once on first use)
+let stmts = null;
+function getStmts() {
+  if (stmts) return stmts;
+  const db = getDb();
+  stmts = {
+    upsertDevice: db.prepare(`
+      INSERT INTO devices (device_id, display_name, ip_address, acronym, orb_color, last_seen)
+      VALUES (?, ?, ?, ?, ?, datetime('now'))
+      ON CONFLICT(device_id) DO UPDATE SET
+        display_name = COALESCE(excluded.display_name, devices.display_name),
+        ip_address = COALESCE(excluded.ip_address, devices.ip_address),
+        acronym = COALESCE(excluded.acronym, devices.acronym),
+        orb_color = COALESCE(excluded.orb_color, devices.orb_color),
+        last_seen = datetime('now'),
+        is_active = 1
+    `),
+    insertStats: db.prepare(`
+      INSERT INTO system_stats (device_id, cpu_usage, free_memory_mb, total_memory_mb, system_uptime)
+      VALUES (?, ?, ?, ?, ?)
+    `),
+    upsertService: db.prepare(`
+      INSERT INTO system_services (device_id, service_name, is_running, remote_site, reported_at)
+      VALUES (?, ?, ?, ?, datetime('now'))
+      ON CONFLICT(device_id, service_name) DO UPDATE SET
+        is_running = excluded.is_running,
+        remote_site = excluded.remote_site,
+        reported_at = datetime('now')
+    `),
+    insertPartition: db.prepare(`
+      INSERT INTO disk_partitions (device_id, partition_name, total_space_mb, free_space_mb, used_space_mb)
+      VALUES (?, ?, ?, ?, ?)
+    `),
+    insertArchive: db.prepare(`
+      INSERT INTO archive_files (file_name, file_size_mb, modification_date)
+      VALUES (?, ?, ?)
+    `),
+    insertVpn: db.prepare(`
+      INSERT INTO vpn_connections (common_name, bytes_sent, bytes_received, connected_since)
+      VALUES (?, ?, ?, ?)
+    `)
+  };
+  return stmts;
 }
 
 // POST /api/agent/report - Full device health report
@@ -49,59 +100,30 @@ router.post('/report', (req, res) => {
   }
 
   try {
-    const upsertDevice = db.prepare(`
-      INSERT INTO devices (device_id, display_name, ip_address, acronym, orb_color, last_seen)
-      VALUES (?, ?, ?, ?, ?, datetime('now'))
-      ON CONFLICT(device_id) DO UPDATE SET
-        display_name = COALESCE(excluded.display_name, devices.display_name),
-        ip_address = COALESCE(excluded.ip_address, devices.ip_address),
-        acronym = COALESCE(excluded.acronym, devices.acronym),
-        orb_color = COALESCE(excluded.orb_color, devices.orb_color),
-        last_seen = datetime('now'),
-        is_active = 1
-    `);
-
-    const insertStats = db.prepare(`
-      INSERT INTO system_stats (device_id, cpu_usage, free_memory_mb, total_memory_mb, system_uptime)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-
-    const upsertService = db.prepare(`
-      INSERT INTO system_services (device_id, service_name, is_running, remote_site, reported_at)
-      VALUES (?, ?, ?, ?, datetime('now'))
-      ON CONFLICT(device_id, service_name) DO UPDATE SET
-        is_running = excluded.is_running,
-        remote_site = excluded.remote_site,
-        reported_at = datetime('now')
-    `);
-
-    const insertPartition = db.prepare(`
-      INSERT INTO disk_partitions (device_id, partition_name, total_space_mb, free_space_mb, used_space_mb)
-      VALUES (?, ?, ?, ?, ?)
-    `);
+    const s = getStmts();
 
     const transaction = db.transaction(() => {
-      upsertDevice.run(
+      s.upsertDevice.run(
         device_id,
-        display_name || device_id,
-        ip_address || null,
-        acronym || device_id.substring(0, 6),
+        truncate(display_name, MAX_STR_LENGTH) || device_id,
+        truncate(ip_address, 45) || null,
+        truncate(acronym, 20) || device_id.substring(0, 6),
         orb_color || '#0EA5E9'
       );
 
       if (cpu_usage != null || free_memory_mb != null) {
-        insertStats.run(device_id, cpu_usage, free_memory_mb, total_memory_mb, system_uptime);
+        s.insertStats.run(device_id, cpu_usage, free_memory_mb, total_memory_mb, system_uptime);
       }
 
       if (Array.isArray(services)) {
         for (const svc of services) {
-          upsertService.run(device_id, svc.service_name, svc.is_running ? 1 : 0, svc.remote_site || null);
+          s.upsertService.run(device_id, truncate(svc.service_name, MAX_STR_LENGTH), svc.is_running ? 1 : 0, truncate(svc.remote_site, MAX_STR_LENGTH) || null);
         }
       }
 
       if (Array.isArray(partitions)) {
         for (const part of partitions) {
-          insertPartition.run(device_id, part.partition_name, part.total_space_mb, part.free_space_mb, part.used_space_mb);
+          s.insertPartition.run(device_id, truncate(part.partition_name, MAX_STR_LENGTH), part.total_space_mb, part.free_space_mb, part.used_space_mb);
         }
       }
     });
@@ -129,14 +151,11 @@ router.post('/archive', (req, res) => {
   }
 
   try {
-    const insert = db.prepare(`
-      INSERT INTO archive_files (file_name, file_size_mb, modification_date)
-      VALUES (?, ?, ?)
-    `);
+    const s = getStmts();
 
     const transaction = db.transaction(() => {
       for (const file of files) {
-        insert.run(file.file_name, file.file_size_mb, file.modification_date || null);
+        s.insertArchive.run(truncate(file.file_name, MAX_STR_LENGTH), file.file_size_mb, file.modification_date || null);
       }
     });
 
@@ -161,14 +180,11 @@ router.post('/vpn', (req, res) => {
   }
 
   try {
-    const insert = db.prepare(`
-      INSERT INTO vpn_connections (common_name, bytes_sent, bytes_received, connected_since)
-      VALUES (?, ?, ?, ?)
-    `);
+    const s = getStmts();
 
     const transaction = db.transaction(() => {
       for (const conn of connections) {
-        insert.run(conn.common_name, conn.bytes_sent, conn.bytes_received, conn.connected_since || null);
+        s.insertVpn.run(truncate(conn.common_name, MAX_STR_LENGTH), conn.bytes_sent, conn.bytes_received, conn.connected_since || null);
       }
     });
 

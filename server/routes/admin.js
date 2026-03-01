@@ -31,6 +31,12 @@ router.put('/devices/:id', (req, res) => {
   if (orb_color !== undefined && !HEX_COLOR.test(orb_color)) {
     return res.status(400).json({ error: 'Invalid orb_color (hex only)' });
   }
+  if (display_name !== undefined && String(display_name).length > 255) {
+    return res.status(400).json({ error: 'display_name too long (max 255)' });
+  }
+  if (acronym !== undefined && String(acronym).length > 20) {
+    return res.status(400).json({ error: 'acronym too long (max 20)' });
+  }
 
   try {
     const fields = [];

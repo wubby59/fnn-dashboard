@@ -203,13 +203,14 @@
 }
 
 /* ---------- Status-based Glow Colors ---------- */
+/* !important overrides inline style.background set by orbs.js per-device color */
 .service-orb--up .service-orb__glow {
-  background: #22C55E !important;
+  background: var(--success) !important;
   animation: glowBreathUp 3s ease-in-out infinite;
 }
-.service-orb--warn .service-orb__glow { background: #EAB308 !important; }
+.service-orb--warn .service-orb__glow { background: var(--warning) !important; }
 .service-orb--down .service-orb__glow {
-  background: #EF4444 !important;
+  background: var(--error) !important;
   opacity: 0.8;
   filter: blur(16px);
   animation: glowPulse 2s ease-in-out infinite;
@@ -282,7 +283,7 @@
   }
 
   .service-orb__acronym { font-size: 10px; }
-  .service-orb__status { width: 10px; height: 10px; }
+  .service-orb__status { width: 10px; height: 10px; bottom: 4px; right: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

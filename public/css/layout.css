@@ -193,7 +193,9 @@ html.dark .bg-orb--xs { opacity: 0.8; }
   align-items: center;
   gap: var(--sp-xs);
   padding: var(--sp-xs) var(--sp-md);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border-secondary);
+  background: var(--glass-bg-secondary);
   font-size: 13px;
   font-weight: 600;
   color: var(--muted-text);
@@ -257,6 +259,7 @@ html.dark .bg-orb--xs { opacity: 0.8; }
   gap: var(--sp-sm);
   margin-bottom: var(--sp-base);
   padding-bottom: var(--sp-sm);
+  border-bottom: 1px solid var(--glass-border-secondary);
 }
 
 .section-header__icon {
@@ -311,22 +314,21 @@ html.dark .bg-orb--xs { opacity: 0.8; }
 .legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-xs);
   white-space: nowrap;
 }
 
 .legend-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .legend-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--muted-text);
-  font-family: var(--font-mono);
 }
 
 /* ---------- Section spacing ---------- */
@@ -359,6 +361,11 @@ html.dark .bg-orb--xs { opacity: 0.8; }
     border-radius: var(--radius-2xl);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
+  }
+
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
   }
 }
 

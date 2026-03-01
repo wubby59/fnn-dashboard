@@ -151,13 +151,14 @@ const Charts = (() => {
       card.appendChild(wrapper);
       container.appendChild(card);
 
+      const base = baseChartOptions(colors);
       archiveCharts[canvasId] = new Chart(canvas, {
         type: 'line',
         data: { labels, datasets },
         options: {
-          ...baseChartOptions(colors),
+          ...base,
           plugins: {
-            ...baseChartOptions(colors).plugins,
+            ...base.plugins,
             legend: {
               position: 'bottom',
               labels: {
@@ -292,7 +293,13 @@ const Charts = (() => {
               }
             ]
           },
-          options: baseChartOptions(colors)
+          options: {
+            ...baseChartOptions(colors),
+            plugins: {
+              ...baseChartOptions(colors).plugins,
+              legend: { ...baseChartOptions(colors).plugins.legend, position: 'bottom' }
+            }
+          }
         });
       }
     });
