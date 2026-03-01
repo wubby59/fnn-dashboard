@@ -1,0 +1,207 @@
+/* ==========================================================================
+   System Stats Cards - Glassmorphism device info cards
+   ========================================================================== */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--sp-sm);
+}
+
+/* ---------- Stat Card ---------- */
+.stat-card {
+  padding: var(--sp-sm) var(--sp-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card--pinned {
+  border-color: var(--primary);
+}
+
+.stat-card--pinned::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-glow));
+}
+
+/* Card header */
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-xs);
+}
+
+.stat-card__name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--base-text);
+}
+
+.stat-card__ip {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted-text);
+  font-family: var(--font-mono);
+}
+
+.stat-card__actions {
+  display: flex;
+  gap: var(--sp-xs);
+}
+
+.stat-card__action {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted-text);
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.stat-card__action:hover {
+  background: var(--glass-bg-secondary);
+  color: var(--primary);
+}
+
+.stat-card__action--pinned {
+  color: var(--primary);
+}
+
+.stat-card__action--delete:hover {
+  color: var(--error);
+}
+
+/* Stats rows */
+.stat-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.stat-row__label {
+  color: var(--muted-text);
+  font-weight: 500;
+}
+
+.stat-row__value {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--base-text);
+}
+
+/* CPU/RAM progress bars */
+.stat-bar {
+  margin-top: 2px;
+}
+
+.stat-bar__track {
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+html.dark .stat-bar__track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-bar__fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-bar__fill--cpu { background: linear-gradient(90deg, var(--success), var(--warning)); }
+.stat-bar__fill--ram { background: linear-gradient(90deg, var(--primary), var(--primary-glow)); }
+.stat-bar__fill--high { background: linear-gradient(90deg, var(--warning), var(--error)); }
+
+/* ---------- Status-based Card Glow ---------- */
+.stat-card--up {
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.1), inset 0 0 12px rgba(34, 197, 94, 0.05);
+}
+
+.stat-card--warn {
+  border-color: rgba(234, 179, 8, 0.4);
+  box-shadow: 0 0 16px rgba(234, 179, 8, 0.15), inset 0 0 12px rgba(234, 179, 8, 0.05);
+  animation: cardPulseWarn 2.5s ease-in-out infinite;
+}
+
+.stat-card--down {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.08);
+  animation: cardPulseDown 1.5s ease-in-out infinite;
+}
+
+@keyframes cardPulseWarn {
+  0%, 100% { box-shadow: 0 0 16px rgba(234, 179, 8, 0.15), inset 0 0 12px rgba(234, 179, 8, 0.05); }
+  50% { box-shadow: 0 0 24px rgba(234, 179, 8, 0.25), inset 0 0 16px rgba(234, 179, 8, 0.1); }
+}
+
+@keyframes cardPulseDown {
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.08); }
+  50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.35), inset 0 0 20px rgba(239, 68, 68, 0.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card--warn,
+  .stat-card--down { animation: none; }
+}
+
+/* Stale indicator */
+.stat-card--stale {
+  opacity: 0.7;
+}
+
+.stat-card--stale .stat-card__name::after {
+  content: ' (stale)';
+  font-size: 11px;
+  color: var(--warning);
+  font-weight: 400;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-card {
+    padding: var(--sp-xs);
+  }
+
+  .stat-card__action {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: var(--sp-xs);
+  }
+}

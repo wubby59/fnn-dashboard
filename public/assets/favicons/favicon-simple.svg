@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Simplified design optimized for small sizes (16x16, 32x32) -->
+  <!-- Cyan-blue rounded square background - minimal padding -->
+  <rect x="2" y="2" width="60" height="60" rx="12" ry="12" fill="#0EA5E9"/>
+
+  <!-- White FN letters - bold and clear for legibility -->
+  <g fill="#FFFFFF">
+    <!-- F letter -->
+    <rect x="12" y="16" width="8" height="32" />
+    <rect x="12" y="16" width="17" height="8" />
+    <rect x="12" y="28" width="13" height="6" />
+
+    <!-- N letter -->
+    <rect x="35" y="16" width="8" height="32" />
+    <rect x="49" y="16" width="8" height="32" />
+    <!-- Diagonal -->
+    <path d="M 38 20 L 45 20 L 55 42 L 52 42 Z" />
+  </g>
+</svg>

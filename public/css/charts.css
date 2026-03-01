@@ -1,0 +1,79 @@
+/* ==========================================================================
+   Charts - Archive and VPN chart containers
+   ========================================================================== */
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-xl);
+}
+
+.chart-card {
+  padding: var(--sp-lg);
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--base-text);
+  margin-bottom: var(--sp-md);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-card__canvas-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 140px;
+}
+
+.chart-card__canvas-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ---------- Archive Combined Chart ---------- */
+#archive-charts {
+  display: block;
+}
+
+.archive-chart-single {
+  padding: var(--sp-sm) var(--sp-base);
+  width: 100%;
+}
+
+.archive-chart-single__canvas {
+  position: relative;
+  height: 200px;
+}
+
+/* No-data message */
+.charts-empty {
+  text-align: center;
+  padding: var(--sp-3xl);
+  color: var(--muted-text);
+  font-size: 14px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card {
+    min-height: 180px;
+    padding: var(--sp-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-card {
+    min-height: 160px;
+  }
+}

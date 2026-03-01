@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="nGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="80" fill="url(#bgGrad)"/>
+  <g stroke="#EAB308" stroke-width="8" stroke-linejoin="round" fill="url(#nGrad)">
+    <path d="M 120,390 L 120,122 L 184,122 L 184,268
+             L 218,196 L 200,152 L 248,122
+             L 280,122 L 312,152 L 294,196
+             L 328,268 L 328,122 L 392,122
+             L 392,390 L 328,390 L 328,244
+             L 294,316 L 312,360 L 264,390
+             L 232,390 L 200,360 L 218,316
+             L 184,244 L 184,390 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FNN Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicons/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/assets/favicons/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/favicons/site.webmanifest">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/orbs.css">
+  <link rel="stylesheet" href="/css/cards.css">
+  <link rel="stylesheet" href="/css/charts.css">
+</head>
+<body>
+  <!-- Animated gradient background -->
+  <div class="animated-background" aria-hidden="true">
+    <div class="bg-orb bg-orb--lg" style="top: 8%; left: 5%;"></div>
+    <div class="bg-orb bg-orb--lg" style="top: 60%; right: 10%; animation-delay: -8s;"></div>
+    <div class="bg-orb bg-orb--md" style="top: 25%; right: 25%; animation-delay: -4s;"></div>
+    <div class="bg-orb bg-orb--md" style="bottom: 20%; left: 20%; animation-delay: -12s;"></div>
+    <div class="bg-orb bg-orb--sm" style="top: 15%; left: 45%; animation-delay: -6s;"></div>
+    <div class="bg-orb bg-orb--sm" style="bottom: 35%; right: 15%; animation-delay: -2s;"></div>
+    <div class="bg-orb bg-orb--sm" style="top: 50%; left: 70%; animation-delay: -10s;"></div>
+    <div class="bg-orb bg-orb--xs" style="top: 40%; left: 15%; animation-delay: -3s;"></div>
+    <div class="bg-orb bg-orb--xs" style="bottom: 10%; right: 40%; animation-delay: -7s;"></div>
+    <div class="bg-orb bg-orb--xs" style="top: 75%; left: 55%; animation-delay: -5s;"></div>
+  </div>
+
+  <!-- Lightning canvas sits above #app (z-index:1) but below .header (z-index:100) -->
+  <canvas id="bg-lightning-canvas" aria-hidden="true"></canvas>
+
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <a href="/" class="header__brand">
+        <img src="/assets/svg-icons/logo.svg" alt="FNN" class="header__logo">
+        <span class="header__title">FastNetNow</span>
+      </a>
+
+      <nav class="header__nav">
+        <div class="nav-badge">
+          <span class="nav-badge__count" id="count-services">-</span>
+          <span class="nav-badge__label">Services</span>
+        </div>
+        <div class="nav-badge">
+          <span class="nav-badge__count" id="count-devices">-</span>
+          <span class="nav-badge__label">Devices</span>
+        </div>
+        <div class="nav-badge">
+          <span class="nav-badge__count" id="count-files">-</span>
+          <span class="nav-badge__label">Files</span>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme"></button>
+        <button class="theme-toggle" id="anim-toggle" type="button" aria-label="Toggle animations"></button>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Service Orbs Section -->
+      <section id="orbs-section" aria-label="Service Orbs">
+        <div class="section-header">
+          <svg class="section-header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <h2 class="section-header__title">Services</h2>
+          <span class="section-header__count" id="orbs-count"></span>
+        </div>
+        <div class="orbs-container" id="orbs-container">
+          <canvas id="lightning-canvas" aria-hidden="true"></canvas>
+          <div class="orbs-field" id="orbs-field-1"></div>
+          <div class="orbs-field orbs-field--reverse" id="orbs-field-2"></div>
+        </div>
+      </section>
+
+      <!-- System Stats Section -->
+      <section id="stats-section" aria-label="System Stats">
+        <div class="section-header">
+          <svg class="section-header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <h2 class="section-header__title">System Stats</h2>
+          <span class="section-header__count" id="stats-count"></span>
+        </div>
+        <div class="stats-grid" id="stats-grid"></div>
+      </section>
+
+      <!-- Archive Charts Section -->
+      <section id="archive-section" aria-label="Archive Files">
+        <div class="section-header">
+          <svg class="section-header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <h2 class="section-header__title">Archive Growth</h2>
+        </div>
+        <div id="archive-charts"></div>
+      </section>
+
+      <!-- VPN Charts Section -->
+      <section id="vpn-section" aria-label="VPN Connections">
+        <div class="section-header">
+          <svg class="section-header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <h2 class="section-header__title">VPN Traffic</h2>
+        </div>
+        <div class="charts-grid" id="vpn-charts"></div>
+      </section>
+    </main>
+
+    <!-- Footer / Legend -->
+    <footer class="footer" id="footer">
+      <div id="legend-container"></div>
+      <span class="footer__timestamp" id="last-update"></span>
+    </footer>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <!-- App modules -->
+  <script src="/js/api.js"></script>
+  <script src="/js/theme.js"></script>
+  <script src="/js/orbs.js"></script>
+  <script src="/js/lightning.js"></script>
+  <script src="/js/bg-lightning.js"></script>
+  <script src="/js/stats.js"></script>
+  <script src="/js/charts.js"></script>
+  <script src="/js/legend.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

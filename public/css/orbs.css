@@ -1,0 +1,317 @@
+/* ==========================================================================
+   Service Orbs - Floating animated device indicators
+   ========================================================================== */
+
+.orbs-container {
+  position: relative;
+  min-height: 280px;
+  padding: var(--sp-xl) 0;
+  overflow: hidden;
+}
+
+#lightning-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.orbs-field {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--sp-xl);
+  align-items: center;
+  padding: var(--sp-base) var(--sp-base) 0;
+  z-index: 1;
+  width: max-content;
+  animation: marqueeScroll 55s linear infinite;
+}
+
+.orbs-field--reverse {
+  animation: marqueeScrollReverse 55s linear infinite;
+  padding-top: var(--sp-sm);
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marqueeScrollReverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.orbs-container:hover .orbs-field {
+  animation-play-state: paused;
+}
+
+/* ---------- Drift Wrapper (separates drift from hover scale) ---------- */
+.service-orb-wrapper {
+  will-change: transform;
+  pointer-events: none;
+}
+
+.service-orb-wrapper--drift-1 { animation: orbDrift1 28s ease-in-out infinite; }
+.service-orb-wrapper--drift-2 { animation: orbDrift2 24s ease-in-out infinite; }
+.service-orb-wrapper--drift-3 { animation: orbDrift3 32s ease-in-out infinite; }
+.service-orb-wrapper--drift-4 { animation: orbDrift4 20s ease-in-out infinite; }
+
+/* ---------- Individual Orb ---------- */
+.service-orb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  cursor: default;
+  pointer-events: auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-orb__glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  opacity: 0.6;
+  filter: blur(12px);
+  z-index: -1;
+  transition: opacity 0.3s;
+}
+
+.service-orb__body {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--glass-border-secondary);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Rotating light sweep */
+.service-orb__body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 10%,
+    transparent 20%
+  );
+  animation: lightSweep 4s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes lightSweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.service-orb:hover {
+  transform: scale(1.12);
+}
+
+.service-orb:hover .service-orb__glow {
+  opacity: 0.9;
+}
+
+/* Orb text */
+.service-orb__acronym {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--base-text);
+}
+
+.service-orb__ip {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted-text);
+  font-family: var(--font-mono);
+}
+
+/* Status indicator dot */
+.service-orb__status {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  z-index: 3;
+}
+
+.service-orb__status--up {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+.service-orb__status--down {
+  background: var(--error);
+  box-shadow: 0 0 8px var(--error);
+  animation: pulseDown 1.5s ease-in-out infinite;
+}
+
+.service-orb__status--warn {
+  background: var(--warning);
+  box-shadow: 0 0 8px var(--warning);
+}
+
+@keyframes pulseDown {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+/* ---------- Status-based Breathing ---------- */
+.service-orb--up { animation: breatheHealthy 3s ease-in-out infinite; }
+.service-orb--warn { animation: breatheWarn 2s ease-in-out infinite; }
+.service-orb--down { animation: breatheAlert 1.2s ease-in-out infinite; }
+
+@keyframes breatheHealthy {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes breatheWarn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+@keyframes breatheAlert {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.15); }
+}
+
+/* ---------- Status-based Glow Colors ---------- */
+.service-orb--up .service-orb__glow {
+  background: #22C55E !important;
+  animation: glowBreathUp 3s ease-in-out infinite;
+}
+.service-orb--warn .service-orb__glow { background: #EAB308 !important; }
+.service-orb--down .service-orb__glow {
+  background: #EF4444 !important;
+  opacity: 0.8;
+  filter: blur(16px);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowBreathUp {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+}
+
+/* ---------- Drift Keyframes ---------- */
+@keyframes orbDrift1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(0, -6px); }
+  50% { transform: translate(0, 10px); }
+  75% { transform: translate(0, 4px); }
+}
+
+@keyframes orbDrift2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(0, 8px); }
+  66% { transform: translate(0, -12px); }
+}
+
+@keyframes orbDrift3 {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(0, -4px); }
+  40% { transform: translate(0, 12px); }
+  60% { transform: translate(0, 8px); }
+  80% { transform: translate(0, -10px); }
+}
+
+@keyframes orbDrift4 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(0, -8px); }
+  50% { transform: translate(0, 6px); }
+  75% { transform: translate(0, 4px); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .orbs-container {
+    min-height: 220px;
+  }
+
+  .service-orb {
+    width: 72px;
+    height: 72px;
+  }
+
+  .service-orb__acronym { font-size: 11px; }
+  .service-orb__ip { font-size: 9px; }
+
+  .orbs-field,
+  .orbs-field--reverse {
+    gap: var(--sp-base);
+    animation-duration: 40s;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-orb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .service-orb__acronym { font-size: 10px; }
+  .service-orb__status { width: 10px; height: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbs-field,
+  .orbs-field--reverse {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+    justify-content: center;
+  }
+
+  .service-orb__body::before { animation: none; }
+  .service-orb--up,
+  .service-orb--warn,
+  .service-orb--down { animation: none; }
+  .service-orb--up .service-orb__glow { animation: none; }
+}
+
+/* Animation toggle mirrors reduced-motion layout */
+html.no-anim .orbs-field,
+html.no-anim .orbs-field--reverse {
+  animation: none;
+  flex-wrap: wrap;
+  width: auto;
+  justify-content: center;
+}
+
+html.no-anim .service-orb__body::before { animation: none; }
+html.no-anim .service-orb--up,
+html.no-anim .service-orb--warn,
+html.no-anim .service-orb--down { animation: none; }
+html.no-anim .service-orb--up .service-orb__glow { animation: none; }

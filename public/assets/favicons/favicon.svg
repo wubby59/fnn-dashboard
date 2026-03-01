@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full-bleed rounded square background - minimal padding for max size in tab -->
+  <rect x="16" y="16" width="480" height="480" rx="96" ry="96" fill="#0EA5E9"/>
+
+  <!-- Bold white FN letters - optimized for small sizes -->
+  <g fill="#FFFFFF">
+    <!-- F letter -->
+    <rect x="100" y="130" width="55" height="252" rx="4"/>
+    <rect x="100" y="130" width="140" height="52" rx="4"/>
+    <rect x="100" y="234" width="110" height="46" rx="4"/>
+
+    <!-- N letter -->
+    <rect x="280" y="130" width="55" height="252" rx="4"/>
+    <rect x="395" y="130" width="55" height="252" rx="4"/>
+    <!-- Bold diagonal -->
+    <path d="M 295 150 L 335 150 L 450 362 L 410 362 Z" />
+  </g>
+</svg>

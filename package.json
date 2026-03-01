@@ -1,0 +1,14 @@
+{
+  "name": "fnn-dashboard",
+  "version": "1.0.0",
+  "description": "FastNetNow monitoring dashboard",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "seed": "node server/seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.0"
+  }
+}
